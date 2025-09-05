@@ -55,6 +55,27 @@ def generate_launch_description():
                 "use_sim_time", default_value="true", description="Use simulation clock if true"
             ),
 
+            # 정적 TF 브로드캐스터 - map 프레임을 odom 프레임에 연결
+            Node(
+                package='tf2_ros',
+                executable='static_transform_publisher',
+                name='static_transform_publisher',
+                arguments=['0', '0', '0', '0', '0', '0', 'map', 'odom'],
+                parameters=[{'use_sim_time': True}]
+            ),
+
+            # 맵 서버 - 정적 맵을 로드하여 RViz에 표시
+            Node(
+                package='nav2_map_server',
+                executable='map_server',
+                name='map_server',
+                output='screen',
+                parameters=[{
+                    'use_sim_time': True,
+                    'yaml_filename': map_dir
+                }]
+            ),
+
             # TF 프레임 연결 (Isaac Sim 호환)
             # Isaac Sim은 이미 World -> odom -> base_link 연결을 제공함
             # map -> odom -> base_link 연결을 완성함
@@ -86,6 +107,7 @@ def generate_launch_description():
                     'range_max': 100.0,
                     'use_inf': True,
                     'inf_epsilon': 1.0,
+                    'use_sim_time': True,
                 }],
                 name='pointcloud_to_laserscan'
             ),

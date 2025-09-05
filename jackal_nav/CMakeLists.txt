@@ -52,7 +52,6 @@ install(PROGRAMS
 install(DIRECTORY
   rviz
   maps
-  config
   params
   launch
   DESTINATION share/${PROJECT_NAME}
